@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Profitability Calculator: Max CPS, Min ROAS, Max CPL</title>
+<meta name="description" content="Find your maximum cost per sale and minimum ROAS after returns. Presets for fashion, e-commerce, software and digital marketing services.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#fff;--ink:#0f2a43;--mut:#5c6f83;--line:#dbe3ec;--acc:#0e9f8e;--accbg:#e2f6f3;--bad:#dc3c44;--badbg:#fdeaea;--warn:#b7791f;
+--c-ret:#f0a3a6;--c-cogs:#5b7c99;--c-oth:#a9bccd;--c-ad:#f2b84b;--c-pro:#0e9f8e;
+--r:14px;--fd:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;--fb:'Figtree','Segoe UI',system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1622;--card:#12222f;--ink:#e6eef6;--mut:#8ea3b7;--line:#223547;--accbg:#0f3a3a;--badbg:#3a1a20;--c-ret:#c46a70;--c-cogs:#6f93b3;--c-oth:#48627a}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--fb);padding:24px 16px 48px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font:800 clamp(26px,4.5vw,40px)/1.1 var(--fd);margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 20px;max-width:60ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer;font-weight:500;font-size:14px;transition:.15s}
+.chip input:checked+span{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip input:focus-visible+span,select:focus-visible,input[type=number]:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.cur{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)}
+select{font:500 14px var(--fb);padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.side{position:sticky;top:16px}@media(max-width:820px){.side{position:static}}
+h2{font:700 17px var(--fd);margin:0 0 14px}
+.f{margin-bottom:14px}.f label{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
+.f small{display:block;color:var(--mut);font-size:12.5px;margin-top:3px}
+.in{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden}
+.in:focus-within{border-color:var(--acc)}
+.in b{padding:0 12px;color:var(--mut);font-weight:600;min-width:38px;text-align:center}
+.in input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:600 17px var(--fb);padding:11px 12px 11px 0;outline:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec{border-top:1px dashed var(--line);margin-top:6px;padding-top:16px}
+.tog{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-bottom:14px}.tog input{margin-top:4px;width:18px;height:18px;accent-color:var(--acc)}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.big{border-radius:12px;padding:16px;background:var(--accbg)}
+.big.roas{background:var(--ink);color:var(--bg)}
+.big .l{font-size:13px;font-weight:600;opacity:.8}
+.big .v{font:800 clamp(30px,5vw,42px)/1.1 var(--fd);letter-spacing:-.02em;margin:4px 0;overflow-wrap:anywhere}
+.big .n{font-size:12.5px;opacity:.8}
+.verdict{border-radius:12px;padding:12px 14px;font-weight:500;font-size:14.5px;margin-bottom:14px}
+.verdict.ok{background:var(--accbg)}.verdict.no{background:var(--badbg);color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.stat .l{font-size:12.5px;color:var(--mut)}.stat .v{font:700 18px var(--fd)}
+.bar{display:flex;height:34px;border-radius:9px;overflow:hidden;background:var(--line);margin:8px 0 10px}
+.bar i{display:block;min-width:0;transition:width .35s ease}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--mut);margin-bottom:14px}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+td{padding:8px 0;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+tr.t td{border-bottom:2px solid var(--ink);font-weight:700}
+.neg{color:var(--bad)}.pos{color:var(--acc)}
+.wi{background:var(--bg);border-radius:12px;padding:14px;margin-top:16px}
+.wi h3{font:700 15px var(--fd);margin:0 0 10px}
+.res{font-size:14.5px;margin-top:10px}
+.res b{font-variant-numeric:tabular-nums}
+button{font:600 14px var(--fb);padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--acc)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.note{color:var(--mut);font-size:12.5px;margin-top:18px;text-align:center}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Ad Profitability Calculator</h1>
+  <p class="sub">Pick your business type, enter your numbers, and see the highest cost per sale you can pay and the lowest ROAS you can accept, after returns.</p>
+
+  <div class="top">
+    <div class="chips" id="chips" role="radiogroup" aria-label="Business type"></div>
+    <div class="cur"><label for="cur">Currency</label>
+      <select id="cur">
+        <option value="৳">৳ BDT</option><option value="$">$ USD</option><option value="₹">₹ INR</option>
+        <option value="€">€ EUR</option><option value="£">£ GBP</option><option value="Rs ">Rs PKR/LKR</option><option value="AED ">AED</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card" aria-label="Inputs">
+      <h2 id="ttl">Product details</h2>
+      <div class="f"><label id="lCogs" for="cogs">Product cost (COGS)</label><div class="in"><b class="cs"></b><input id="cogs" type="number" inputmode="decimal" min="0" step="any"></div></div>
+      <div class="f"><label id="lPrice" for="price">Selling price</label><div class="in"><b class="cs"></b><input id="price" type="number" inputmode="decimal" min="0" step="any"></div></div>
+      <div class="f"><label id="lOther" for="other">Other costs per order</label><div class="in"><b class="cs"></b><input id="other" type="number" inputmode="decimal" min="0" step="any"></div><small id="hOther">Delivery, packaging, payment fees</small></div>
+      <div class="two">
+        <div class="f"><label id="lRet" for="ret">Return / cancel rate</label><div class="in"><b>%</b><input id="ret" type="number" inputmode="decimal" min="0" max="99" step="any"></div></div>
+        <div class="f"><label for="mar">Target profit margin</label><div class="in"><b>%</b><input id="mar" type="number" inputmode="decimal" min="0" max="99" step="any"></div></div>
+      </div>
+      <small style="display:block;margin:-6px 0 14px;color:var(--mut);font-size:12.5px">Target margin is a percentage of the selling price.</small>
+
+      <div class="sec" id="physical">
+        <div class="tog"><input type="checkbox" id="restock"><label for="restock">Returned items can be resold. <span style="color:var(--mut)">Leave unticked if returned stock is damaged or lost, which is the safer assumption.</span></label></div>
+        <div class="f"><label for="rex">Extra cost per returned order</label><div class="in"><b class="cs"></b><input id="rex" type="number" inputmode="decimal" min="0" step="any"></div><small>Return shipping or courier charge you pay on each return</small></div>
+      </div>
+
+      <div class="sec">
+        <h2>Funnel (optional)</h2>
+        <div class="two">
+          <div class="f"><label for="cvr">Website conversion rate</label><div class="in"><b>%</b><input id="cvr" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 2"></div></div>
+          <div class="f"><label for="close">Lead to sale close rate</label><div class="in"><b>%</b><input id="close" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 15"></div></div>
+        </div>
+        <small style="color:var(--mut);font-size:12.5px">Conversion rate gives your max cost per click. Close rate gives your max cost per lead.</small>
+      </div>
+    </section>
+
+    <section class="card side" aria-live="polite" aria-label="Results">
+      <div class="hero">
+        <div class="big"><div class="l">Max cost per sale</div><div class="v" id="oCps">0</div><div class="n">Ad spend ceiling per order</div></div>
+        <div class="big roas"><div class="l">Minimum ROAS</div><div class="v" id="oRoas">0x</div><div class="n" id="nRoas">Below this, you lose your target</div></div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <div class="stats">
+        <div class="stat"><div class="l">Break-even cost per sale</div><div class="v" id="sBe">0</div></div>
+        <div class="stat"><div class="l">Break-even ROAS</div><div class="v" id="sBeR">0x</div></div>
+        <div class="stat"><div class="l">Target profit per order</div><div class="v" id="sTp">0</div></div>
+        <div class="stat"><div class="l">Net margin before ads</div><div class="v" id="sNm">0%</div></div>
+        <div class="stat" id="boxCpc" hidden><div class="l">Max cost per click</div><div class="v" id="sCpc">0</div></div>
+        <div class="stat" id="boxCpl" hidden><div class="l">Max cost per lead</div><div class="v" id="sCpl">0</div></div>
+      </div>
+
+      <h2>Where each selling price goes</h2>
+      <div class="bar" id="bar" role="img" aria-label="Breakdown bar"></div>
+      <div class="leg" id="leg"></div>
+      <table id="tbl"></table>
+
+      <div class="wi">
+        <h3>Check a real campaign</h3>
+        <div class="in"><b class="cs"></b><input id="act" type="number" inputmode="decimal" min="0" step="any" placeholder="Your actual cost per sale" aria-label="Actual cost per sale"></div>
+        <div class="res" id="actRes">Enter the cost per sale from Ads Manager to see profit per order.</div>
+      </div>
+      <div class="tools"><button id="copy" type="button">Copy summary</button><button id="reset" type="button">Reset to preset</button></div>
+    </section>
+  </div>
+  <p class="note">Presets are typical starting points, not benchmarks. Replace them with your own numbers. Nothing you enter leaves your browser.</p>
+</div>
+
+<script>
+const P={
+ fashion:{n:'Fashion',k:'p',price:1800,cogs:800,other:120,ret:20,mar:15,rex:100,cvr:2},
+ ecom:{n:'General e-commerce',k:'p',price:1200,cogs:500,other:80,ret:15,mar:10,rex:80,cvr:2},
+ elec:{n:'Electronics',k:'p',price:4500,cogs:3400,other:150,ret:8,mar:8,rex:150,cvr:1.5},
+ beauty:{n:'Beauty',k:'p',price:1500,cogs:550,other:80,ret:10,mar:15,rex:80,cvr:2.5},
+ home:{n:'Home & living',k:'p',price:2500,cogs:1200,other:150,ret:12,mar:12,rex:150,cvr:1.5},
+ food:{n:'Food & grocery',k:'p',price:800,cogs:400,other:80,ret:6,mar:10,rex:0,cvr:3},
+ saas:{n:'Software',k:'d',price:15000,cogs:2500,other:1500,ret:5,mar:25,close:15,price_l:'Deal value (first payment)',cogs_l:'Delivery & hosting cost',other_l:'Other costs',other_h:'Sales commission, tools, payment fees',ret_l:'Refund rate'},
+ svc:{n:'Digital marketing services',k:'d',price:25000,cogs:8000,other:2000,ret:3,mar:25,close:20,price_l:'Deal value (first invoice)',cogs_l:'Cost to deliver the work',other_l:'Other costs',other_h:'Freelancers, software, sales commission',ret_l:'Refund / cancel rate'},
+ custom:{n:'Custom',k:'p',price:1000,cogs:400,other:60,ret:10,mar:10,rex:0,cvr:2}
+};
+const $=id=>document.getElementById(id);
+let cur='fashion';
+const chips=$('chips');
+Object.keys(P).forEach(k=>{const l=document.createElement('label');l.className='chip';l.innerHTML=`<input type="radio" name="t" value="${k}"${k===cur?' checked':''}><span>${P[k].n}</span>`;chips.appendChild(l)});
+const num=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0};
+const sym=()=>$('cur').value;
+const money=v=>(v<0?'-':'')+sym()+Math.round(Math.abs(v)).toLocaleString('en-US');
+const pct=v=>(Math.round(v*10)/10)+'%';
+const x=v=>(Math.round(v*100)/100).toFixed(2)+'x';
+
+function load(k){
+ cur=k;const p=P[k],d=p.k==='d';
+ ['price','cogs','other','ret','mar'].forEach(f=>$(f).value=p[f]);
+ $('rex').value=p.rex||0;$('cvr').value=p.cvr||'';$('close').value=p.close||'';$('restock').checked=false;$('act').value='';
+ $('physical').hidden=d;
+ $('ttl').textContent=d?'Deal details':'Product details';
+ $('lPrice').textContent=d?p.price_l:'Selling price';
+ $('lCogs').textContent=d?p.cogs_l:'Product cost (COGS)';
+ $('lOther').textContent=d?p.other_l:'Other costs per order';
+ $('hOther').textContent=d?p.other_h:'Delivery, packaging, payment fees';
+ $('lRet').textContent=d?p.ret_l:'Return / cancel rate';
+ calc();
+}
+let R={};
+function calc(){
+ document.querySelectorAll('.cs').forEach(e=>e.textContent=sym().trim());
+ const d=P[cur].k==='d';
+ const p=num('price'),c=num('cogs'),o=num('other'),r=Math.min(num('ret'),99)/100,m=Math.min(num('mar'),99)/100;
+ const rs=!d&&$('restock').checked,rex=d?0:num('rex');
+ const rev=p*(1-r),retLoss=p*r,cogsE=rs?c*(1-r):c,rexE=rex*r,tp=p*m;
+ const be=rev-cogsE-o-rexE,max=be-tp;
+ const roas=max>0?p/max:null,beR=be>0?p/be:null;
+ R={p,c,o,r,m,rev,retLoss,cogsE,rexE,tp,be,max,roas,beR,d};
+ $('oCps').textContent=max>0?money(max):money(0);
+ $('oCps').parentNode.style.background=max>0?'':'var(--badbg)';
+ $('oRoas').textContent=roas?x(roas):'n/a';
+ $('nRoas').textContent=roas?'Below this, you miss your '+pct(m*100)+' margin':'No ad spend keeps this profitable';
+ const v=$('verdict');
+ if(!p){v.className='verdict no';v.textContent='Enter a selling price to begin.'}
+ else if(max<=0){v.className='verdict no';v.textContent=be>0?`Your ${pct(m*100)} target margin is too high for these costs. You can only spend up to ${money(be)} per sale just to break even. Lower the target, cut costs or raise the price.`:'After returns and costs, each order loses money before any ad spend. Fix pricing, costs or return rate first.'}
+ else{v.className='verdict ok';v.textContent=`Keep cost per sale under ${money(max)} and ROAS above ${x(roas)}. Above ${money(be)} you lose money on every order.`}
+ $('sBe').textContent=be>0?money(be):money(0);
+ $('sBeR').textContent=beR?x(beR):'n/a';
+ $('sTp').textContent=money(tp);
+ $('sNm').textContent=p?pct((be/p)*100):'0%';
+ const cvr=num('cvr'),cl=num('close');
+ $('boxCpc').hidden=!(cvr&&max>0);$('sCpc').textContent=cvr?money(max*cvr/100):'';
+ $('boxCpl').hidden=!(cl&&max>0);$('sCpl').textContent=cl?money(max*cl/100):'';
+ // bar
+ const segs=[['Returns',retLoss,'--c-ret'],['Product cost',cogsE,'--c-cogs'],['Other costs',o+rexE,'--c-oth'],['Ad spend',Math.max(max,0),'--c-ad'],['Profit',tp,'--c-pro']];
+ const tot=segs.reduce((a,s)=>a+s[1],0)||1;
+ $('bar').innerHTML=segs.map(s=>`<i title="${s[0]}: ${money(s[1])}" style="width:${s[1]/tot*100}%;background:var(${s[2]})"></i>`).join('');
+ $('leg').innerHTML=segs.map(s=>`<span style="--c:var(${s[2]})">${s[0]} ${tot?Math.round(s[1]/tot*100):0}%</span>`).join('');
+ const rows=[[d?'Deal value':'Selling price',p],[`Refund / return loss (${pct(r*100)})`,-retLoss,1],['Effective revenue per order',rev,0,1],[d?'Delivery cost':(rs?'Product cost (on kept orders)':'Product cost'),-cogsE],['Other costs',-o]];
+ if(rexE)rows.push(['Return shipping (average)',-rexE]);
+ rows.push(['Max ad spend (cost per sale)',-Math.max(max,0)],['Target profit',tp,0,1]);
+ $('tbl').innerHTML=rows.map(w=>`<tr class="${w[3]?'t':''}"><td>${w[0]}</td><td class="${w[1]<0?'neg':(w[3]&&w[0]==='Target profit'?'pos':'')}">${money(w[1])}</td></tr>`).join('');
+ actual();
+}
+function actual(){
+ const a=num('act'),e=$('actRes');
+ if(!a||!R.p){e.textContent='Enter the cost per sale from Ads Manager to see profit per order.';return}
+ const pr=R.be-a,mg=pr/R.p*100,ro=R.p/a;
+ e.innerHTML=`Profit per order: <b class="${pr<0?'neg':'pos'}">${money(pr)}</b> (${pct(mg)} margin). Actual ROAS <b>${x(ro)}</b> vs needed <b>${R.roas?x(R.roas):'n/a'}</b>. ${pr<0?'This campaign is losing money.':(R.max>0&&a<=R.max?'You are meeting your target margin.':'Profitable, but below your target margin.')}`;
+}
+chips.addEventListener('change',e=>load(e.target.value));
+['price','cogs','other','ret','mar','rex','cvr','close','restock','cur'].forEach(i=>$(i).addEventListener('input',calc));
+$('act').addEventListener('input',actual);
+$('reset').onclick=()=>load(cur);
+$('copy').onclick=()=>{
+ const t=`${P[cur].n} | Max cost per sale: ${money(Math.max(R.max,0))} | Min ROAS: ${R.roas?x(R.roas):'n/a'} | Break-even ROAS: ${R.beR?x(R.beR):'n/a'} | Return rate: ${pct(R.r*100)} | Target margin: ${pct(R.m*100)}`;
+ const b=$('copy');const done=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy summary',1400)};
+ (navigator.clipboard?navigator.clipboard.writeText(t).then(done,done):done());
+};
+load(cur);
+</script>
+</body>
+</html>
